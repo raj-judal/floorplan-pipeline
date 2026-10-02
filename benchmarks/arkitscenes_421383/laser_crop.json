@@ -1,0 +1,16 @@
+{
+ "visit": 421383,
+ "floor_z": 192.4954,
+ "ceiling_z": 194.8251,
+ "crop_xy_min": [
+  -0.81,
+  -3.32
+ ],
+ "crop_xy_max": [
+  7.7,
+  1.39
+ ],
+ "z_min": 192.3954,
+ "z_max": 194.9251,
+ "source": "merged Faro scans downsampled to 1 cm (research/arkitscenes_downsample_laser.py)"
+}

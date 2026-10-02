@@ -75,3 +75,16 @@ Open questions: one room and one device only; iPhone may differ; ~10 mm residual
 - Stray Scanner loader uses per-frame intrinsics from `odometry.csv`, scaled from 1920x1440 to the depth resolution.
 - ARKitScenes loader inverts the world-to-camera `.traj` and interpolates poses to each depth timestamp (slerp + linear), rejecting gaps over 0.15 s. Usable frames rose from about 80% (nearest pose within 20 ms) to 1120 of 1129 and 745 of 754.
 - `tools/inspect_capture.py` loads any capture, fuses it and prints a summary; unit tests in `tests/` cover pose inversion, interpolation, gap rejection and back-projection.
+
+## 2026-10-03: Reproducibility check
+
+- `tools/inspect_capture.py` on the sample single-room capture gave identical results on Windows (laptop) and Linux (sandbox): 1,715 frames, 1,384,766 fused points, floor at -1.487 m.
+
+## 2026-10-03: Plane extraction vs laser (visit 421383)
+
+- `floorplan/geometry/planes.py`: gravity alignment, robust floor/ceiling plane fits (tilt allowed), Manhattan yaw from wall normals, wall offsets from 1D histogram peaks.
+- Laser ground truth: floor tilt 0.03 deg, ceiling tilt 0.18 deg, plane residuals 1.7 to 1.8 mm. The ceiling tilt alone changes height by ~13 mm across a 4 m room, so ceiling height must be reported as a footprint average, not at one point.
+- Ceiling height from plane fits, evaluated at the room centre (no bias correction): -9.6 mm (42444966), -26.6 mm (42444968). Spread 17 mm: with plane fits the result is UNREPEATABLE, whereas the earlier median method was repeatable-but-biased. Measurement method changes the diagnosis; it must be fixed before the benchmark.
+- Walls: histogram peaks include cabinet and furniture faces in this kitchen. Keeping only "structural" surfaces (at least 15% of points more than 1.8 m above the floor) removes most furniture.
+- Structural wall offsets vs laser: +11 to +58 mm (42444966), -41 to +60 mm (42444968). Confounded by registration (ICP RMSE ~14 mm) and in-capture drift. Fair comparison is wall-to-wall distance within one capture; registration only supplies correspondence.
+- Registration transforms and crop box are stored in `benchmarks/arkitscenes_421383/` so the evaluation regenerates from raw data.

@@ -161,3 +161,10 @@ Observations: all 8 wall lengths and both ceilings are SHORT (errors -5 to -96 m
 ## 2026-10-03: Fix loop attempt 1 (failed)
 
 Declared fix (overlap-based loop candidates) shipped; wall repeatability median difference got worse, 44 -> 72 mm, 0 of 4 pairs still failing; ceiling spread 17.8 -> 43.2 mm. The declaration's falsification test fired: walls still doubled. Splitting doubled walls by time shows the second copy comes from a few seconds of mis-tracked frames (capture start on 42444968; a 1 s blip on 42444966), not slow drift between passes. Full write-up: `docs/fix_postmortem_v1.md`.
+
+## 2026-10-03: Fix loop attempt 2, hypothesis tested BEFORE declaring (refuted)
+
+Lesson from attempt 1 applied: test the mechanism before writing a declaration.
+Hypothesis 2: the second wall copy comes from short pose glitches (a few seconds of frames placed ~6 cm off), so re-aligning each half-second segment against what other passes saw would merge the copies.
+Detection test on 42444968 (no gate measured): if a whole segment were mis-posed by 6 cm, all its surfaces would disagree with other passes. They do not: every segment, including the 2-6 s segments that produced the outer copy of R1-W4, has a median distance of 1.2 to 1.9 cm to other passes, the same as everywhere else. ICP "corrections" of 2 to 22 cm were flagged on almost every segment (72 of 147), which is ICP sliding along planar walls, not glitches. The detector cannot separate glitch segments, and the outer copy is local to the wall rather than a whole-frame pose error.
+Result: hypothesis 2 refuted before any declaration or gate measurement; code removed. The cause of the doubled walls is still unknown (candidates: viewpoint-dependent depth error on specific surfaces, or something that moved in the scene).

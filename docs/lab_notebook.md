@@ -157,3 +157,7 @@ Timing: drift correction 143 s plus pipeline 134 s for the 215 s apartment scan 
 | Calibration of 90% intervals | 4 of 10 truths inside | coverage 0.40 |
 
 Observations: all 8 wall lengths and both ceilings are SHORT (errors -5 to -96 mm), consistent with surfaces pulled toward the camera, but often larger than the ~2.5 cm per wall-to-wall distance that the depth offset alone predicts, so a second cause (snapping to cabinet fronts in this kitchen, or drift) is likely. Intervals are far too narrow (0.40 coverage): the provisional error budget is overconfident and must be recalibrated, since confident garbage caps the score. One repeatability pair (254 mm) is a mismatched wall, not a measurement.
+
+## 2026-10-03: Fix loop attempt 1 (failed)
+
+Declared fix (overlap-based loop candidates) shipped; wall repeatability median difference got worse, 44 -> 72 mm, 0 of 4 pairs still failing; ceiling spread 17.8 -> 43.2 mm. The declaration's falsification test fired: walls still doubled. Splitting doubled walls by time shows the second copy comes from a few seconds of mis-tracked frames (capture start on 42444968; a 1 s blip on 42444966), not slow drift between passes. Full write-up: `docs/fix_postmortem_v1.md`.

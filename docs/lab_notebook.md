@@ -121,3 +121,23 @@ Known failure modes to report: unentered rooms, wide openings merging rooms, gla
 - Error budget (`floorplan/pipeline.py` CONFIG, provisional until calibrated on the benchmark): 15 mm per snapped wall face, 50 mm per unsnapped edge, 20 mm on observed ceiling height. Wall length sigma combines its two bounding faces.
 - Unobserved ceiling: reported as a bounded interval (highest observed surface to a 3.2 m residential prior) with a warning, never as a confident number.
 - Room-to-room passages come from where room masks touch; currently one of them lands on an unsnapped false boundary inside the bedroom (the bedroom split), a known failure.
+
+## 2026-10-03: Drift correction and ablation (full scan with ceiling)
+
+Attempt 1, 6-DoF fragment pose graph (Open3D, ICP loop closures): loop residual 32.6 -> 27.5 mm, but walls got blurrier (share of wall points within 2 cm of the snapped face 0.565 -> 0.512; face spread 8.7 -> 9.9 mm). Diagnosis: the optimiser tilted fragments by a median 1.3 deg (max 4.6 deg) and consecutive fragments jumped by up to 56 cm. Phone gravity is accurate to ~0.15-0.19 deg (laser check), so tilt was error introduced by bad loop closures.
+
+Attempt 2, 4-DoF (x, y, z, yaw; gravity fixed), loop closures validated for overlap, residual, zero tilt (13 bad matches rejected) and plausible shift; Huber least squares; corrections interpolated per frame (largest step between fragments 2.9 cm, largest shift 18.6 cm, largest yaw 0.76 deg).
+
+Ablation, same capture, stride 8 (`tools/drift_ablation.py`):
+
+| | Drift OFF | Drift ON (4-DoF) |
+|---|---|---|
+| Rooms | 7 | 7 |
+| Footprint | 64.5 m2 | 66.5 m2 |
+| Bounding extent | 14.57 x 9.70 m | 13.92 x 9.72 m |
+| Wall points within 2 cm of face | 0.565 | 0.609 |
+| Snapped edges | 47 | 46 |
+
+Walls are sharper with correction and the top-right room becomes a clean rectangle (render: drift_ablation_full_scan.png). The footprint changes by 3% and the x extent by 65 cm, which is large; without ground truth we cannot say which is right, only that the corrected walls are more self-consistent. Loop residual measured as median point distance did not move (30.3 vs 30.6 mm) because it is dominated by 5 cm voxel noise; a better drift metric is needed for the report.
+
+Timing: drift correction 143 s plus pipeline 134 s for the 215 s apartment scan in the sandbox; slower on the laptop. 436 of 472 ICP loop attempts fail the overlap test, so a cheap overlap prefilter would save most of that time.

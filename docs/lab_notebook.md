@@ -141,3 +141,19 @@ Ablation, same capture, stride 8 (`tools/drift_ablation.py`):
 Walls are sharper with correction and the top-right room becomes a clean rectangle (render: drift_ablation_full_scan.png). The footprint changes by 3% and the x extent by 65 cm, which is large; without ground truth we cannot say which is right, only that the corrected walls are more self-consistent. Loop residual measured as median point distance did not move (30.3 vs 30.6 mm) because it is dominated by 5 cm voxel noise; a better drift metric is needed for the report.
 
 Timing: drift correction 143 s plus pipeline 134 s for the 215 s apartment scan in the sandbox; slower on the laptop. 436 of 472 ICP loop attempts fail the overlap test, so a cheap overlap prefilter would save most of that time.
+
+## 2026-10-03: Reproducibility of drift ablation, a floor bug, and the first LiDAR benchmark
+
+- Drift ablation regenerated on the Windows laptop: identical room count, room areas and footprint to 4 decimals; sharpness metric differs in the 6th decimal.
+- Bug: the room stage took the floor as the LARGEST horizontal surface. On ARKitScenes 42444966 the ceiling has more points than the floor, so "floor" was the ceiling, every wall failed to snap and the ceiling read as unobserved. Fixed: lowest well-supported surface (same rule as the plane fitter); regression test added.
+- `tools/benchmark_lidar_laser.py` scores pipeline outputs against the laser. Ground truth is measured from laser points (the pipeline's walls only say where to look); registration rigid, refined by ICP on the pipeline's own fused cloud (RMSE 15 mm). Report: `benchmarks/arkitscenes_421383/lidar_benchmark_v0.json`.
+
+| Gate | Result | Pass |
+|---|---|---|
+| Ceiling height <= 15 mm | -9.9 mm, -27.7 mm | 1 of 2 |
+| Ceiling spread across captures <= 10 mm | 17.8 mm (unrepeatable) | no |
+| Wall repeatability <= max(1 cm, 0.5%) | 4 pairs, median difference 44 mm | 0 of 4 |
+| Wall length vs laser (no LiDAR gate in brief) | median abs error 44.8 mm, 90th pct 76.8 mm | n/a |
+| Calibration of 90% intervals | 4 of 10 truths inside | coverage 0.40 |
+
+Observations: all 8 wall lengths and both ceilings are SHORT (errors -5 to -96 mm), consistent with surfaces pulled toward the camera, but often larger than the ~2.5 cm per wall-to-wall distance that the depth offset alone predicts, so a second cause (snapping to cabinet fronts in this kitchen, or drift) is likely. Intervals are far too narrow (0.40 coverage): the provisional error budget is overconfident and must be recalibrated, since confident garbage caps the score. One repeatability pair (254 mm) is a mismatched wall, not a measurement.

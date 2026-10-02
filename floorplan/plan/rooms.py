@@ -237,6 +237,30 @@ def snap_edges(edges, verts, P, N, g: Grid, mask):
     return edges
 
 
+def _drop_slivers(edges, max_len=0.06, max_step=0.04):
+    """Remove tiny jogs left after snapping: an edge shorter than max_len whose two
+    neighbours are parallel and within max_step of each other is noise, so the
+    neighbours are merged (support-weighted) and the sliver dropped."""
+    changed = True
+    while changed and len(edges) > 4:
+        changed = False
+        V = _vertices(edges)
+        for i, e in enumerate(edges):
+            a, b = V[i - 1], V[i]
+            length = abs(a[1 - e.axis] - b[1 - e.axis])
+            p, n = edges[i - 1], edges[(i + 1) % len(edges)]
+            if length < max_len and p.axis == n.axis and abs(p.coord - n.coord) < max_step:
+                w1, w2 = max(p.n_support, 1), max(n.n_support, 1)
+                p.coord = (p.coord * w1 + n.coord * w2) / (w1 + w2)
+                p.n_support += n.n_support
+                p.snapped = p.snapped or n.snapped
+                drop = {i, (i + 1) % len(edges)}
+                edges = [x for k, x in enumerate(edges) if k not in drop]
+                changed = True
+                break
+    return edges
+
+
 def extract_room_polygons(rooms, g: Grid, P, N):
     for room in rooms:
         edges = _rectilinear(room.mask, g)
@@ -246,8 +270,15 @@ def extract_room_polygons(rooms, g: Grid, P, N):
             continue   # could not reduce to alternating edges; left without a polygon
         verts = _vertices(edges)
         edges = snap_edges(edges, verts, P, N, g, room.mask)
+        edges = _drop_slivers(edges)
+        if len(edges) < 4:
+            continue
+        verts = _vertices(edges)
+        for i, e in enumerate(edges):               # spans follow the snapped neighbours
+            a, b = verts[i - 1], verts[i]
+            e.span = tuple(sorted([a[1 - e.axis], b[1 - e.axis]]))
         room.edges = edges
-        room.polygon = _vertices(edges)
+        room.polygon = verts
     return rooms
 
 

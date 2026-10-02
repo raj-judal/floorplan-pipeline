@@ -1,0 +1,6 @@
+numpy
+scipy
+pandas
+pillow
+open3d
+jsonschema

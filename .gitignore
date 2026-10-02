@@ -1,0 +1,15 @@
+# data and large binaries are fetched by script, never committed
+data/
+*.ply
+*.zip
+*.mov
+*.mp4
+*.npy
+*.png
+!docs/**/*.png
+weights/
+outputs/
+# python
+.venv/
+__pycache__/
+*.pyc

@@ -1,0 +1,1034 @@
+{
+  "schema_version": "1.0.0",
+  "capture": {
+    "capture_id": "house_a_photo_01",
+    "tier": "photo",
+    "device": {
+      "model": "iPhone 15",
+      "os_version": "18.6"
+    },
+    "capture_app": {
+      "name": "Camera (native)",
+      "version": null
+    },
+    "source_files": [
+      "captures/house_a/photo/bedroom/",
+      "captures/house_a/photo/hallway/"
+    ],
+    "captured_at": null
+  },
+  "pipeline": {
+    "version": "0.1.0",
+    "git_commit": null,
+    "command": "python -m floorplan run captures/house_a/photo --tier photo",
+    "config_hash": "sha256:example",
+    "seed": 0,
+    "used_cache": false,
+    "models": [
+      {
+        "name": "Depth Anything V2 Metric Indoor (Small)",
+        "version": "v2",
+        "used_for": "metric scale",
+        "source_url": null,
+        "license": "Apache-2.0",
+        "weights_sha256": null
+      }
+    ],
+    "hardware": "NVIDIA T500 4GB",
+    "runtime_seconds": 142.0
+  },
+  "rooms": [
+    {
+      "id": "R1",
+      "label": "bedroom",
+      "is_connector": false,
+      "floor_polygon": [
+        [
+          0,
+          0
+        ],
+        [
+          3.6,
+          0
+        ],
+        [
+          3.6,
+          3.2
+        ],
+        [
+          0,
+          3.2
+        ]
+      ],
+      "transform_to_property": {
+        "translation": [
+          0,
+          0
+        ],
+        "rotation_deg": 0
+      },
+      "surfaces": [
+        {
+          "id": "R1-W1",
+          "kind": "wall",
+          "area": {
+            "value": 9.72,
+            "unit": "m2",
+            "ci": {
+              "lower": 8.75,
+              "upper": 10.69,
+              "level": 0.9
+            },
+            "method": "photo_mast3r_metric_depth_scale",
+            "n_samples": null
+          }
+        },
+        {
+          "id": "R1-W2",
+          "kind": "wall",
+          "area": {
+            "value": 8.64,
+            "unit": "m2",
+            "ci": {
+              "lower": 7.78,
+              "upper": 9.5,
+              "level": 0.9
+            },
+            "method": "photo_mast3r_metric_depth_scale",
+            "n_samples": null
+          }
+        },
+        {
+          "id": "R1-W3",
+          "kind": "wall",
+          "area": {
+            "value": 9.72,
+            "unit": "m2",
+            "ci": {
+              "lower": 8.75,
+              "upper": 10.69,
+              "level": 0.9
+            },
+            "method": "photo_mast3r_metric_depth_scale",
+            "n_samples": null
+          }
+        },
+        {
+          "id": "R1-W4",
+          "kind": "wall",
+          "area": {
+            "value": 8.64,
+            "unit": "m2",
+            "ci": {
+              "lower": 7.78,
+              "upper": 9.5,
+              "level": 0.9
+            },
+            "method": "photo_mast3r_metric_depth_scale",
+            "n_samples": null
+          }
+        },
+        {
+          "id": "R1-F",
+          "kind": "floor",
+          "area": {
+            "value": 11.52,
+            "unit": "m2",
+            "ci": {
+              "lower": 10.14,
+              "upper": 12.9,
+              "level": 0.9
+            },
+            "method": "photo_mast3r_metric_depth_scale",
+            "n_samples": null
+          }
+        },
+        {
+          "id": "R1-C",
+          "kind": "ceiling",
+          "area": {
+            "value": 11.52,
+            "unit": "m2",
+            "ci": {
+              "lower": 10.14,
+              "upper": 12.9,
+              "level": 0.9
+            },
+            "method": "photo_mast3r_metric_depth_scale",
+            "n_samples": null
+          }
+        }
+      ],
+      "walls": [
+        {
+          "surface_id": "R1-W1",
+          "start": [
+            0,
+            0
+          ],
+          "end": [
+            3.6,
+            0
+          ],
+          "length": {
+            "value": 3.6,
+            "unit": "m",
+            "ci": {
+              "lower": 3.384,
+              "upper": 3.816,
+              "level": 0.9
+            },
+            "method": "photo_mast3r_metric_depth_scale",
+            "n_samples": null
+          },
+          "height": {
+            "value": 2.7,
+            "unit": "m",
+            "ci": {
+              "lower": 2.58,
+              "upper": 2.82,
+              "level": 0.9
+            },
+            "method": "photo_mast3r_metric_depth_scale",
+            "n_samples": null
+          }
+        },
+        {
+          "surface_id": "R1-W2",
+          "start": [
+            3.6,
+            0
+          ],
+          "end": [
+            3.6,
+            3.2
+          ],
+          "length": {
+            "value": 3.2,
+            "unit": "m",
+            "ci": {
+              "lower": 3.008,
+              "upper": 3.392,
+              "level": 0.9
+            },
+            "method": "photo_mast3r_metric_depth_scale",
+            "n_samples": null
+          },
+          "height": {
+            "value": 2.7,
+            "unit": "m",
+            "ci": {
+              "lower": 2.58,
+              "upper": 2.82,
+              "level": 0.9
+            },
+            "method": "photo_mast3r_metric_depth_scale",
+            "n_samples": null
+          }
+        },
+        {
+          "surface_id": "R1-W3",
+          "start": [
+            3.6,
+            3.2
+          ],
+          "end": [
+            0,
+            3.2
+          ],
+          "length": {
+            "value": 3.6,
+            "unit": "m",
+            "ci": {
+              "lower": 3.384,
+              "upper": 3.816,
+              "level": 0.9
+            },
+            "method": "photo_mast3r_metric_depth_scale",
+            "n_samples": null
+          },
+          "height": {
+            "value": 2.7,
+            "unit": "m",
+            "ci": {
+              "lower": 2.58,
+              "upper": 2.82,
+              "level": 0.9
+            },
+            "method": "photo_mast3r_metric_depth_scale",
+            "n_samples": null
+          }
+        },
+        {
+          "surface_id": "R1-W4",
+          "start": [
+            0,
+            3.2
+          ],
+          "end": [
+            0,
+            0
+          ],
+          "length": {
+            "value": 3.2,
+            "unit": "m",
+            "ci": {
+              "lower": 3.008,
+              "upper": 3.392,
+              "level": 0.9
+            },
+            "method": "photo_mast3r_metric_depth_scale",
+            "n_samples": null
+          },
+          "height": {
+            "value": 2.7,
+            "unit": "m",
+            "ci": {
+              "lower": 2.58,
+              "upper": 2.82,
+              "level": 0.9
+            },
+            "method": "photo_mast3r_metric_depth_scale",
+            "n_samples": null
+          }
+        }
+      ],
+      "openings": [
+        {
+          "id": "R1-O1",
+          "type": "door",
+          "wall_id": "R1-W2",
+          "width": {
+            "value": 0.82,
+            "unit": "m",
+            "ci": {
+              "lower": 0.76,
+              "upper": 0.88,
+              "level": 0.9
+            },
+            "method": "photo_mast3r_metric_depth_scale",
+            "n_samples": null
+          },
+          "height": {
+            "value": 2.03,
+            "unit": "m",
+            "ci": {
+              "lower": 1.93,
+              "upper": 2.13,
+              "level": 0.9
+            },
+            "method": "photo_mast3r_metric_depth_scale",
+            "n_samples": null
+          },
+          "sill_height": null,
+          "offset_along_wall": {
+            "value": 1.1,
+            "unit": "m",
+            "ci": {
+              "lower": 0.95,
+              "upper": 1.25,
+              "level": 0.9
+            },
+            "method": "photo_mast3r_metric_depth_scale",
+            "n_samples": null
+          },
+          "connects_to": "R2",
+          "detection_confidence": 0.91
+        },
+        {
+          "id": "R1-O2",
+          "type": "window",
+          "wall_id": "R1-W4",
+          "width": {
+            "value": 1.2,
+            "unit": "m",
+            "ci": {
+              "lower": 1.12,
+              "upper": 1.28,
+              "level": 0.9
+            },
+            "method": "photo_mast3r_metric_depth_scale",
+            "n_samples": null
+          },
+          "height": {
+            "value": 1.1,
+            "unit": "m",
+            "ci": {
+              "lower": 1.02,
+              "upper": 1.18,
+              "level": 0.9
+            },
+            "method": "photo_mast3r_metric_depth_scale",
+            "n_samples": null
+          },
+          "sill_height": {
+            "value": 0.9,
+            "unit": "m",
+            "ci": {
+              "lower": 0.82,
+              "upper": 0.98,
+              "level": 0.9
+            },
+            "method": "photo_mast3r_metric_depth_scale",
+            "n_samples": null
+          },
+          "offset_along_wall": {
+            "value": 1.0,
+            "unit": "m",
+            "ci": {
+              "lower": 0.85,
+              "upper": 1.15,
+              "level": 0.9
+            },
+            "method": "photo_mast3r_metric_depth_scale",
+            "n_samples": null
+          },
+          "connects_to": "exterior",
+          "detection_confidence": 0.84
+        }
+      ],
+      "ceiling_height": {
+        "value": 2.7,
+        "unit": "m",
+        "ci": {
+          "lower": 2.58,
+          "upper": 2.82,
+          "level": 0.9
+        },
+        "method": "photo_mast3r_metric_depth_scale",
+        "n_samples": null
+      },
+      "floor_area": {
+        "value": 11.52,
+        "unit": "m2",
+        "ci": {
+          "lower": 10.14,
+          "upper": 12.9,
+          "level": 0.9
+        },
+        "method": "photo_mast3r_metric_depth_scale",
+        "n_samples": null
+      },
+      "perimeter": {
+        "value": 13.6,
+        "unit": "m",
+        "ci": {
+          "lower": 12.8,
+          "upper": 14.4,
+          "level": 0.9
+        },
+        "method": "photo_mast3r_metric_depth_scale",
+        "n_samples": null
+      }
+    },
+    {
+      "id": "R2",
+      "label": "hallway",
+      "is_connector": true,
+      "floor_polygon": [
+        [
+          0,
+          0
+        ],
+        [
+          1.2,
+          0
+        ],
+        [
+          1.2,
+          3.2
+        ],
+        [
+          0,
+          3.2
+        ]
+      ],
+      "transform_to_property": {
+        "translation": [
+          3.6,
+          0
+        ],
+        "rotation_deg": 0
+      },
+      "surfaces": [
+        {
+          "id": "R2-W1",
+          "kind": "wall",
+          "area": {
+            "value": 3.24,
+            "unit": "m2",
+            "ci": {
+              "lower": 2.92,
+              "upper": 3.56,
+              "level": 0.9
+            },
+            "method": "photo_mast3r_metric_depth_scale",
+            "n_samples": null
+          }
+        },
+        {
+          "id": "R2-W2",
+          "kind": "wall",
+          "area": {
+            "value": 8.64,
+            "unit": "m2",
+            "ci": {
+              "lower": 7.78,
+              "upper": 9.5,
+              "level": 0.9
+            },
+            "method": "photo_mast3r_metric_depth_scale",
+            "n_samples": null
+          }
+        },
+        {
+          "id": "R2-W3",
+          "kind": "wall",
+          "area": {
+            "value": 3.24,
+            "unit": "m2",
+            "ci": {
+              "lower": 2.92,
+              "upper": 3.56,
+              "level": 0.9
+            },
+            "method": "photo_mast3r_metric_depth_scale",
+            "n_samples": null
+          }
+        },
+        {
+          "id": "R2-W4",
+          "kind": "wall",
+          "area": {
+            "value": 8.64,
+            "unit": "m2",
+            "ci": {
+              "lower": 7.78,
+              "upper": 9.5,
+              "level": 0.9
+            },
+            "method": "photo_mast3r_metric_depth_scale",
+            "n_samples": null
+          }
+        },
+        {
+          "id": "R2-F",
+          "kind": "floor",
+          "area": {
+            "value": 3.84,
+            "unit": "m2",
+            "ci": {
+              "lower": 3.38,
+              "upper": 4.3,
+              "level": 0.9
+            },
+            "method": "photo_mast3r_metric_depth_scale",
+            "n_samples": null
+          }
+        },
+        {
+          "id": "R2-C",
+          "kind": "ceiling",
+          "area": {
+            "value": 3.84,
+            "unit": "m2",
+            "ci": {
+              "lower": 3.38,
+              "upper": 4.3,
+              "level": 0.9
+            },
+            "method": "photo_mast3r_metric_depth_scale",
+            "n_samples": null
+          }
+        }
+      ],
+      "walls": [
+        {
+          "surface_id": "R2-W1",
+          "start": [
+            0,
+            0
+          ],
+          "end": [
+            1.2,
+            0
+          ],
+          "length": {
+            "value": 1.2,
+            "unit": "m",
+            "ci": {
+              "lower": 1.128,
+              "upper": 1.272,
+              "level": 0.9
+            },
+            "method": "photo_mast3r_metric_depth_scale",
+            "n_samples": null
+          },
+          "height": {
+            "value": 2.7,
+            "unit": "m",
+            "ci": {
+              "lower": 2.58,
+              "upper": 2.82,
+              "level": 0.9
+            },
+            "method": "photo_mast3r_metric_depth_scale",
+            "n_samples": null
+          }
+        },
+        {
+          "surface_id": "R2-W2",
+          "start": [
+            1.2,
+            0
+          ],
+          "end": [
+            1.2,
+            3.2
+          ],
+          "length": {
+            "value": 3.2,
+            "unit": "m",
+            "ci": {
+              "lower": 3.008,
+              "upper": 3.392,
+              "level": 0.9
+            },
+            "method": "photo_mast3r_metric_depth_scale",
+            "n_samples": null
+          },
+          "height": {
+            "value": 2.7,
+            "unit": "m",
+            "ci": {
+              "lower": 2.58,
+              "upper": 2.82,
+              "level": 0.9
+            },
+            "method": "photo_mast3r_metric_depth_scale",
+            "n_samples": null
+          }
+        },
+        {
+          "surface_id": "R2-W3",
+          "start": [
+            1.2,
+            3.2
+          ],
+          "end": [
+            0,
+            3.2
+          ],
+          "length": {
+            "value": 1.2,
+            "unit": "m",
+            "ci": {
+              "lower": 1.128,
+              "upper": 1.272,
+              "level": 0.9
+            },
+            "method": "photo_mast3r_metric_depth_scale",
+            "n_samples": null
+          },
+          "height": {
+            "value": 2.7,
+            "unit": "m",
+            "ci": {
+              "lower": 2.58,
+              "upper": 2.82,
+              "level": 0.9
+            },
+            "method": "photo_mast3r_metric_depth_scale",
+            "n_samples": null
+          }
+        },
+        {
+          "surface_id": "R2-W4",
+          "start": [
+            0,
+            3.2
+          ],
+          "end": [
+            0,
+            0
+          ],
+          "length": {
+            "value": 3.2,
+            "unit": "m",
+            "ci": {
+              "lower": 3.008,
+              "upper": 3.392,
+              "level": 0.9
+            },
+            "method": "photo_mast3r_metric_depth_scale",
+            "n_samples": null
+          },
+          "height": {
+            "value": 2.7,
+            "unit": "m",
+            "ci": {
+              "lower": 2.58,
+              "upper": 2.82,
+              "level": 0.9
+            },
+            "method": "photo_mast3r_metric_depth_scale",
+            "n_samples": null
+          }
+        }
+      ],
+      "openings": [
+        {
+          "id": "R2-O1",
+          "type": "door",
+          "wall_id": "R2-W4",
+          "width": {
+            "value": 0.82,
+            "unit": "m",
+            "ci": {
+              "lower": 0.76,
+              "upper": 0.88,
+              "level": 0.9
+            },
+            "method": "photo_mast3r_metric_depth_scale",
+            "n_samples": null
+          },
+          "height": {
+            "value": 2.03,
+            "unit": "m",
+            "ci": {
+              "lower": 1.93,
+              "upper": 2.13,
+              "level": 0.9
+            },
+            "method": "photo_mast3r_metric_depth_scale",
+            "n_samples": null
+          },
+          "sill_height": null,
+          "offset_along_wall": {
+            "value": 1.28,
+            "unit": "m",
+            "ci": {
+              "lower": 1.13,
+              "upper": 1.43,
+              "level": 0.9
+            },
+            "method": "photo_mast3r_metric_depth_scale",
+            "n_samples": null
+          },
+          "connects_to": "R1",
+          "detection_confidence": 0.88
+        }
+      ],
+      "ceiling_height": {
+        "value": 2.7,
+        "unit": "m",
+        "ci": {
+          "lower": 2.58,
+          "upper": 2.82,
+          "level": 0.9
+        },
+        "method": "photo_mast3r_metric_depth_scale",
+        "n_samples": null
+      },
+      "floor_area": {
+        "value": 3.84,
+        "unit": "m2",
+        "ci": {
+          "lower": 3.38,
+          "upper": 4.3,
+          "level": 0.9
+        },
+        "method": "photo_mast3r_metric_depth_scale",
+        "n_samples": null
+      },
+      "perimeter": {
+        "value": 8.8,
+        "unit": "m",
+        "ci": {
+          "lower": 8.27,
+          "upper": 9.33,
+          "level": 0.9
+        },
+        "method": "photo_mast3r_metric_depth_scale",
+        "n_samples": null
+      }
+    }
+  ],
+  "property_plan": {
+    "adjacency": [
+      {
+        "room_a": "R1",
+        "room_b": "R2",
+        "opening_a": "R1-O1",
+        "opening_b": "R2-O1",
+        "evidence": "doorway_photo_match",
+        "confidence": 0.86
+      }
+    ],
+    "footprint_area": {
+      "value": 15.36,
+      "unit": "m2",
+      "ci": {
+        "lower": 13.52,
+        "upper": 17.2,
+        "level": 0.9
+      },
+      "method": "photo_mast3r_metric_depth_scale",
+      "n_samples": null
+    },
+    "bounding_extent": {
+      "x": {
+        "value": 4.8,
+        "unit": "m",
+        "ci": {
+          "lower": 4.51,
+          "upper": 5.09,
+          "level": 0.9
+        },
+        "method": "photo_mast3r_metric_depth_scale",
+        "n_samples": null
+      },
+      "y": {
+        "value": 3.2,
+        "unit": "m",
+        "ci": {
+          "lower": 3.01,
+          "upper": 3.39,
+          "level": 0.9
+        },
+        "method": "photo_mast3r_metric_depth_scale",
+        "n_samples": null
+      }
+    },
+    "max_room_overlap_m2": 0.0,
+    "unplaced_rooms": [],
+    "drift_correction": {
+      "method": "opening_constraint_solver",
+      "enabled": true,
+      "loop_closures": null,
+      "residual_before_m": 0.21,
+      "residual_after_m": 0.03
+    }
+  },
+  "damage_regions": [
+    {
+      "id": "D1",
+      "surface_id": "R1-C",
+      "class": "water_stain",
+      "class_confidence": 0.78,
+      "polygon_surface": [
+        [
+          2.6,
+          2.1
+        ],
+        [
+          3.3,
+          2.1
+        ],
+        [
+          3.3,
+          2.8
+        ],
+        [
+          2.6,
+          2.8
+        ]
+      ],
+      "area": {
+        "value": 0.49,
+        "unit": "m2",
+        "ci": {
+          "lower": 0.37,
+          "upper": 0.61,
+          "level": 0.9
+        },
+        "method": "photo_mast3r_metric_depth_scale",
+        "n_samples": null
+      },
+      "extent": {
+        "width": {
+          "value": 0.7,
+          "unit": "m",
+          "ci": {
+            "lower": 0.62,
+            "upper": 0.78,
+            "level": 0.9
+          },
+          "method": "photo_mast3r_metric_depth_scale",
+          "n_samples": null
+        },
+        "height": {
+          "value": 0.7,
+          "unit": "m",
+          "ci": {
+            "lower": 0.62,
+            "upper": 0.78,
+            "level": 0.9
+          },
+          "method": "photo_mast3r_metric_depth_scale",
+          "n_samples": null
+        }
+      },
+      "evidence_frames": [
+        "bedroom/IMG_0003.HEIC"
+      ],
+      "detector": "grounding-dino-tiny+sam2-tiny"
+    },
+    {
+      "id": "D2",
+      "surface_id": "R1-W3",
+      "class": "crack",
+      "class_confidence": 0.71,
+      "polygon_surface": [
+        [
+          1.4,
+          1.6
+        ],
+        [
+          1.45,
+          1.6
+        ],
+        [
+          1.45,
+          2.3
+        ],
+        [
+          1.4,
+          2.3
+        ]
+      ],
+      "area": {
+        "value": 0.035,
+        "unit": "m2",
+        "ci": {
+          "lower": 0.02,
+          "upper": 0.05,
+          "level": 0.9
+        },
+        "method": "photo_mast3r_metric_depth_scale",
+        "n_samples": null
+      },
+      "extent": {
+        "width": {
+          "value": 0.05,
+          "unit": "m",
+          "ci": {
+            "lower": 0.03,
+            "upper": 0.07,
+            "level": 0.9
+          },
+          "method": "photo_mast3r_metric_depth_scale",
+          "n_samples": null
+        },
+        "height": {
+          "value": 0.7,
+          "unit": "m",
+          "ci": {
+            "lower": 0.62,
+            "upper": 0.78,
+            "level": 0.9
+          },
+          "method": "photo_mast3r_metric_depth_scale",
+          "n_samples": null
+        }
+      },
+      "evidence_frames": [
+        "bedroom/IMG_0005.HEIC"
+      ],
+      "detector": "grounding-dino-tiny+sam2-tiny"
+    }
+  ],
+  "concealed_damage_flags": [
+    {
+      "id": "CF1",
+      "rule_id": "CEIL_STAIN_ACTIVE_LEAK",
+      "rule_text": "Water stain on a ceiling surface implies possible wet insulation or joist damage in the cavity above",
+      "fired_on": [
+        "D1"
+      ],
+      "suspected_surfaces": [
+        "R1-C"
+      ],
+      "severity": "high",
+      "rationale": "Stain area above 0.25 m2 threshold"
+    }
+  ],
+  "scope_line_items": [
+    {
+      "id": "S1",
+      "surface_id": "R1-C",
+      "damage_ids": [
+        "D1"
+      ],
+      "action": "inspect_cavity",
+      "quantity": {
+        "value": 1,
+        "unit": "each",
+        "ci": {
+          "lower": 1,
+          "upper": 1,
+          "level": 0.9
+        },
+        "method": "rule",
+        "n_samples": null
+      },
+      "description": "Open and inspect ceiling cavity above stain"
+    },
+    {
+      "id": "S2",
+      "surface_id": "R1-C",
+      "damage_ids": [
+        "D1"
+      ],
+      "action": "replace_drywall",
+      "quantity": {
+        "value": 1.0,
+        "unit": "m2",
+        "ci": {
+          "lower": 0.75,
+          "upper": 1.25,
+          "level": 0.9
+        },
+        "method": "damage_area_plus_margin",
+        "n_samples": null
+      },
+      "description": "Replace stained ceiling board with 0.15 m margin"
+    },
+    {
+      "id": "S3",
+      "surface_id": "R1-W3",
+      "damage_ids": [
+        "D2"
+      ],
+      "action": "seal_crack",
+      "quantity": {
+        "value": 0.7,
+        "unit": "m",
+        "ci": {
+          "lower": 0.62,
+          "upper": 0.78,
+          "level": 0.9
+        },
+        "method": "damage_extent",
+        "n_samples": null
+      },
+      "description": null
+    }
+  ],
+  "quality": {
+    "warnings": [
+      {
+        "code": "few_images",
+        "message": "Hallway has 3 photos; scale interval widened",
+        "affects": [
+          "R2"
+        ]
+      }
+    ]
+  },
+  "artifacts": {
+    "rendered_plan": "outputs/house_a_photo_01/plan.png",
+    "per_room_plans": [],
+    "debug_dir": null
+  }
+}

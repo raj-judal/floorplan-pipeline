@@ -1,0 +1,301 @@
+{
+  "summary": {
+    "ceiling_height": {
+      "gate": "<= 15 mm per room",
+      "errors_mm": [
+        -0.5,
+        -43.6
+      ],
+      "pass_rate": 0.5
+    },
+    "ceiling_repeatability": {
+      "gate": "spread <= 10 mm",
+      "spread_mm": [
+        43.2
+      ],
+      "diagnosis": "unrepeatable"
+    },
+    "wall_repeatability": {
+      "gate": "max(1 cm, 0.5%) per wall",
+      "pairs": 4,
+      "pass_rate": 0.0,
+      "median_diff_mm": 71.85
+    },
+    "wall_length_accuracy": {
+      "walls_with_ground_truth": 9,
+      "median_abs_err_mm": 42.5,
+      "p90_abs_err_mm": 86.5
+    },
+    "calibration": {
+      "target": 0.9,
+      "coverage": 0.36363636363636365,
+      "n": 11
+    }
+  },
+  "repeatability": {
+    "ceiling": [
+      {
+        "rooms": [
+          "R1",
+          "R1"
+        ],
+        "spread_mm": 43.2,
+        "mean_err_mm": -22.1,
+        "pass": false
+      }
+    ],
+    "walls": [
+      {
+        "walls": [
+          "R1-W6",
+          "R1-W3"
+        ],
+        "lengths_m": [
+          1.3606,
+          1.6259
+        ],
+        "diff_mm": 265.3,
+        "tol_mm": 10.0,
+        "pass": false
+      },
+      {
+        "walls": [
+          "R1-W7",
+          "R1-W4"
+        ],
+        "lengths_m": [
+          2.4315,
+          2.4073
+        ],
+        "diff_mm": 24.2,
+        "tol_mm": 12.1,
+        "pass": false
+      },
+      {
+        "walls": [
+          "R1-W8",
+          "R1-W5"
+        ],
+        "lengths_m": [
+          3.6202,
+          3.5381
+        ],
+        "diff_mm": 82.1,
+        "tol_mm": 17.9,
+        "pass": false
+      },
+      {
+        "walls": [
+          "R1-W9",
+          "R1-W6"
+        ],
+        "lengths_m": [
+          2.9833,
+          2.9217
+        ],
+        "diff_mm": 61.6,
+        "tol_mm": 14.8,
+        "pass": false
+      }
+    ]
+  },
+  "runs": [
+    {
+      "capture": "42444966",
+      "registration_rmse_mm": 15.5,
+      "rooms": [
+        {
+          "room": "R1",
+          "ceiling_pred_m": 2.3306,
+          "ceiling_gt_m": 2.3311,
+          "ceiling_err_mm": -0.5,
+          "ceiling_method": "lidar_plane_fit_footprint_mean",
+          "ceiling_in_ci": true,
+          "ceiling_pass": true,
+          "centroid_laser": [
+            2.089,
+            -1.353,
+            193.925
+          ],
+          "walls": [
+            {
+              "surface_id": "R1-W6",
+              "pred_m": 1.3606,
+              "gt_m": 1.3661,
+              "err_mm": -5.5,
+              "in_ci": true,
+              "mid_laser": [
+                2.137,
+                -0.022,
+                193.926
+              ],
+              "dir_laser": [
+                0.225,
+                0.9744,
+                0.0017
+              ]
+            },
+            {
+              "surface_id": "R1-W7",
+              "pred_m": 2.4315,
+              "gt_m": 2.4674,
+              "err_mm": -35.9,
+              "in_ci": false,
+              "mid_laser": [
+                1.105,
+                0.914,
+                193.923
+              ],
+              "dir_laser": [
+                -0.9744,
+                0.225,
+                -0.0032
+              ]
+            },
+            {
+              "surface_id": "R1-W8",
+              "pred_m": 3.6202,
+              "gt_m": 3.6393,
+              "err_mm": -19.1,
+              "in_ci": true,
+              "mid_laser": [
+                -0.487,
+                -0.576,
+                193.916
+              ],
+              "dir_laser": [
+                -0.225,
+                -0.9744,
+                -0.0017
+              ]
+            },
+            {
+              "surface_id": "R1-W9",
+              "pred_m": 2.9833,
+              "gt_m": 3.0258,
+              "err_mm": -42.5,
+              "in_ci": false,
+              "mid_laser": [
+                0.56,
+                -2.675,
+                193.918
+              ],
+              "dir_laser": [
+                0.9744,
+                -0.225,
+                0.0032
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "capture": "42444968",
+      "registration_rmse_mm": 15.3,
+      "rooms": [
+        {
+          "room": "R1",
+          "ceiling_pred_m": 2.2874,
+          "ceiling_gt_m": 2.331,
+          "ceiling_err_mm": -43.6,
+          "ceiling_method": "lidar_plane_fit_footprint_mean",
+          "ceiling_in_ci": false,
+          "ceiling_pass": false,
+          "centroid_laser": [
+            1.689,
+            -1.394,
+            194.075
+          ],
+          "walls": [
+            {
+              "surface_id": "R1-W2",
+              "pred_m": 1.3767,
+              "gt_m": 1.3946,
+              "err_mm": -17.9,
+              "in_ci": true,
+              "mid_laser": [
+                2.586,
+                -1.122,
+                194.074
+              ],
+              "dir_laser": [
+                -0.9764,
+                0.2159,
+                0.0015
+              ]
+            },
+            {
+              "surface_id": "R1-W3",
+              "pred_m": 1.6259,
+              "gt_m": 1.6756,
+              "err_mm": -49.7,
+              "in_ci": false,
+              "mid_laser": [
+                2.089,
+                -0.18,
+                194.075
+              ],
+              "dir_laser": [
+                0.2159,
+                0.9764,
+                0.0005
+              ]
+            },
+            {
+              "surface_id": "R1-W4",
+              "pred_m": 2.4073,
+              "gt_m": 2.4712,
+              "err_mm": -63.9,
+              "in_ci": false,
+              "mid_laser": [
+                1.09,
+                0.874,
+                194.077
+              ],
+              "dir_laser": [
+                -0.9764,
+                0.2159,
+                0.0015
+              ]
+            },
+            {
+              "surface_id": "R1-W5",
+              "pred_m": 3.5381,
+              "gt_m": 3.6298,
+              "err_mm": -91.7,
+              "in_ci": false,
+              "mid_laser": [
+                -0.467,
+                -0.593,
+                194.078
+              ],
+              "dir_laser": [
+                -0.2159,
+                -0.9764,
+                -0.0005
+              ]
+            },
+            {
+              "surface_id": "R1-W6",
+              "pred_m": 2.9217,
+              "gt_m": 3.0069,
+              "err_mm": -85.2,
+              "in_ci": false,
+              "mid_laser": [
+                0.577,
+                -2.636,
+                194.075
+              ],
+              "dir_laser": [
+                0.9764,
+                -0.2159,
+                -0.0015
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

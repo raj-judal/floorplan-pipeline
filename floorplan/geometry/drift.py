@@ -11,8 +11,8 @@ blurrier; see docs/lab_notebook.md.
      cloud in its anchor frame (the middle frame's camera pose).
   2. Odometry edges between consecutive fragments come from the phone (trusted
      short-range, tight weights).
-  3. Loop closures: point-to-plane ICP between non-consecutive fragments that
-     observed the same space (shared coarse voxels). Accepted only if overlap and residual pass
+  3. Loop closures: point-to-plane ICP between non-consecutive fragments whose
+     anchors are within LOOP_RADIUS. Accepted only if overlap and residual pass
      and the implied drift is physically plausible: no tilt, bounded shift.
   4. Robust (Huber) least squares over per-fragment corrections (yaw, t),
      fragment 0 fixed. Corrections are interpolated in time per frame, so
@@ -32,9 +32,7 @@ from ..io.capture import Capture, backproject
 
 FRAG_SECONDS = 3.0
 VOXEL = 0.05
-OVERLAP_CELL = 0.20          # m, coarse voxels for deciding whether two fragments saw the same space
-MIN_OVERLAP = 0.30           # share of the smaller fragment's voxels also seen by the other
-MAX_CANDIDATES = 8           # strongest-overlap partners tested per fragment
+LOOP_RADIUS = 2.5
 MIN_GAP_FRAGMENTS = 4
 FITNESS_MIN = 0.35
 RMSE_MAX = 0.03
@@ -98,41 +96,28 @@ def correct_drift(cap: Capture, stride: int = 6) -> DriftResult:
     edges = [(k, k + 1, np.linalg.inv(anchors[k + 1]) @ anchors[k], SIG_ODO_T, SIG_ODO_YAW)
              for k in range(n - 1)]
     centres = np.array([a[:3, 3] for a in anchors])
-    # Loop candidates: fragments that SAW the same space (shared coarse voxels in
-    # world coordinates), not fragments where the camera stood close together.
-    # Two passes along one wall from different positions are now compared.
-    # (fix loop, docs/fix_declaration.md; previously: camera anchors within 2.5 m)
-    vox = []
-    for c, a in zip(clouds, anchors):
-        W = np.asarray(c.points) @ a[:3, :3].T + a[:3, 3]
-        vox.append(set(map(tuple, np.floor(W / OVERLAP_CELL).astype(np.int64))))
-    pairs = []
-    for i in range(n):
-        scored = []
-        for j in range(i + MIN_GAP_FRAGMENTS, n):
-            ov = len(vox[i] & vox[j]) / max(1, min(len(vox[i]), len(vox[j])))
-            if ov >= MIN_OVERLAP:
-                scored.append((ov, j))
-        pairs += [(i, j) for _, j in sorted(scored, reverse=True)[:MAX_CANDIDATES]]
     loops, rejected, before = [], {"fit": 0, "tilt": 0, "shift": 0}, []
-    for i, j in pairs:
-        T0 = np.linalg.inv(anchors[j]) @ anchors[i]
-        icp = reg.registration_icp(clouds[i], clouds[j], VOXEL * 2, T0, reg.TransformationEstimationPointToPlane())
-        icp = reg.registration_icp(clouds[i], clouds[j], VOXEL, icp.transformation,
-                                   reg.TransformationEstimationPointToPlane())
-        if icp.fitness < FITNESS_MIN or icp.inlier_rmse > RMSE_MAX:
-            rejected["fit"] += 1
-            continue
-        M = anchors[j] @ icp.transformation @ np.linalg.inv(anchors[i])   # implied world drift i -> j
-        if _tilt_deg(M[:3, :3], up) > MAX_LOOP_TILT_DEG:
-            rejected["tilt"] += 1
-            continue
-        if np.linalg.norm(M[:3, 3] - (np.eye(3) - M[:3, :3]) @ centres[i]) > MAX_LOOP_SHIFT_M:
-            rejected["shift"] += 1
-            continue
-        edges.append((i, j, icp.transformation, SIG_LOOP_T, SIG_LOOP_YAW))
-        loops.append((i, j))
-        before.append(_residual(clouds[i], clouds[j], T0))
+    for i in range(n):
+        for j in range(i + MIN_GAP_FRAGMENTS, n):
+            if np.linalg.norm(centres[i] - centres[j]) > LOOP_RADIUS:
+                continue
+            T0 = np.linalg.inv(anchors[j]) @ anchors[i]
+            icp = reg.registration_icp(clouds[i], clouds[j], VOXEL * 2, T0, reg.TransformationEstimationPointToPlane())
+            icp = reg.registration_icp(clouds[i], clouds[j], VOXEL, icp.transformation,
+                                       reg.TransformationEstimationPointToPlane())
+            if icp.fitness < FITNESS_MIN or icp.inlier_rmse > RMSE_MAX:
+                rejected["fit"] += 1
+                continue
+            M = anchors[j] @ icp.transformation @ np.linalg.inv(anchors[i])   # implied world drift i -> j
+            if _tilt_deg(M[:3, :3], up) > MAX_LOOP_TILT_DEG:
+                rejected["tilt"] += 1
+                continue
+            if np.linalg.norm(M[:3, 3] - (np.eye(3) - M[:3, :3]) @ centres[i]) > MAX_LOOP_SHIFT_M:
+                rejected["shift"] += 1
+                continue
+            edges.append((i, j, icp.transformation, SIG_LOOP_T, SIG_LOOP_YAW))
+            loops.append((i, j))
+            before.append(_residual(clouds[i], clouds[j], T0))
 
     def corrected(x):
         return [_corr_matrix(x[4 * k], x[4 * k + 1:4 * k + 4], up) @ anchors[k] for k in range(n)]
@@ -161,7 +146,7 @@ def correct_drift(cap: Capture, stride: int = 6) -> DriftResult:
         p = np.array([np.interp(t, t_centre, params[:, c]) for c in range(4)])
         frame_corr.append(_corr_matrix(p[0], p[1:], up))
     jumps = [np.linalg.norm(params[k + 1, 1:] - params[k, 1:]) for k in range(n - 1)]
-    stats = {"fragments": n, "loop_candidates": len(pairs), "loop_closures": len(loops), "loops_rejected": rejected,
+    stats = {"fragments": n, "loop_closures": len(loops), "loops_rejected": rejected,
              "residual_before_m": float(np.nanmedian(before)) if before else None,
              "residual_after_m": float(np.nanmedian(after)) if after else None,
              "max_shift_m": float(np.max(np.linalg.norm(params[:, 1:], axis=1))),

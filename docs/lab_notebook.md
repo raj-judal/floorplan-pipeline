@@ -88,3 +88,16 @@ Open questions: one room and one device only; iPhone may differ; ~10 mm residual
 - Walls: histogram peaks include cabinet and furniture faces in this kitchen. Keeping only "structural" surfaces (at least 15% of points more than 1.8 m above the floor) removes most furniture.
 - Structural wall offsets vs laser: +11 to +58 mm (42444966), -41 to +60 mm (42444968). Confounded by registration (ICP RMSE ~14 mm) and in-capture drift. Fair comparison is wall-to-wall distance within one capture; registration only supplies correspondence.
 - Registration transforms and crop box are stored in `benchmarks/arkitscenes_421383/` so the evaluation regenerates from raw data.
+
+## 2026-10-03: Rooms stage, first version (LiDAR tier)
+
+Method (`floorplan/plan/rooms.py`): 3 cm occupancy grids (floor, furniture, structural-wall evidence), interior = observed space minus walls, room seeds = interior more than 0.42 m from any boundary (door-width passages separate rooms), watershed growth, rectilinear polygons, each edge snapped to the measured wall face (from points, not the grid).
+
+Results on the company sample data (no ground truth; visual check against the point cloud):
+- Full scan with ceiling: 5 rooms, polygons follow the walls. Missed: rooms the camera did not enter, and a bathroom whose tiles/glass register as wall evidence.
+- Floor-only scan: 4x fewer wall points above 1.5 m (99th percentile point height 2.16 m vs 3.34 m), so rooms merged. Fix: the wall-evidence band adapts to how high the capture reached (here 1.19 to 1.99 m). Corridor and one room still merge.
+- Single-room scan: horizontal floor points spread over 4 cm in height (vertical drift, or a sunken bathroom floor), and large interior areas had no measurement at all (dark sofa, low-confidence pixels). Fixes: floor found per 0.3 m tile as the lowest horizontal surface; interior also marked by carving camera-to-surface rays (free space). The bedroom is now detected; its upper part is still cut off, and the bathroom merges with the corridor.
+
+Timing: fuse + align is 17 s for 1,715 frames at stride 3, but 190 s for the 9,745-frame apartment at stride 5. Too slow for a comfortable live walk-in; needs a faster path.
+
+Known failure modes to report: unentered rooms, wide openings merging rooms, glass/tile false walls, vertical drift.

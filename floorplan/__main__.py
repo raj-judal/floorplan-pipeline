@@ -16,6 +16,7 @@ def main(argv=None):
     r.add_argument("--tier", choices=["lidar", "video", "photo"], default="lidar")
     r.add_argument("--out", type=Path, default=None, help="output folder (default: out/<capture name>)")
     r.add_argument("--stride", type=int, default=None, help="use every n-th frame (default from CONFIG)")
+    r.add_argument("--no-drift", action="store_true", help="disable drift correction (for the ablation)")
     a = ap.parse_args(argv)
 
     if a.tier != "lidar":
@@ -23,7 +24,7 @@ def main(argv=None):
     from .pipeline import run
     out = a.out or Path("out") / a.capture.name
     cmd = "python -m floorplan " + " ".join(argv if argv is not None else sys.argv[1:])
-    doc = run(a.capture, out, stride=a.stride, command=cmd)
+    doc = run(a.capture, out, stride=a.stride, command=cmd, drift=not a.no_drift)
 
     sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
     from validate_output import main as validate

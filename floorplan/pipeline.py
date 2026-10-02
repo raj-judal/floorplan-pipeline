@@ -37,6 +37,7 @@ CONFIG = {
     "ceiling_min_coverage": 0.25,
     "ceiling_upper_prior_m": 3.2,
     "opening_width_sigma_m": 0.04,
+    "drift_correction": True,
 }
 
 
@@ -153,7 +154,7 @@ def _overlap_m2(rooms, g):
     return float(worst)
 
 
-def run(capture_dir, out_dir, stride=None, command="python -m floorplan run"):
+def run(capture_dir, out_dir, stride=None, command="python -m floorplan run", drift=None, drift_result=None, diag=None):
     t0 = time.time()
     capture_dir, out_dir = Path(capture_dir), Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -161,6 +162,17 @@ def run(capture_dir, out_dir, stride=None, command="python -m floorplan run"):
     warnings = []
 
     cap = load_capture(capture_dir)
+    drift = CONFIG["drift_correction"] if drift is None else drift
+    drift_doc = {"method": "none", "enabled": False, "loop_closures": None,
+                 "residual_before_m": None, "residual_after_m": None}
+    if drift:
+        from .geometry.drift import apply_correction, correct_drift
+        dr = drift_result or correct_drift(cap)
+        cap = apply_correction(cap, dr)
+        drift_doc = {"method": "pose_graph_loop_closure", "enabled": True,
+                     "loop_closures": dr.stats["loop_closures"],
+                     "residual_before_m": dr.stats["residual_before_m"],
+                     "residual_after_m": dr.stats["residual_after_m"]}
     pc = fuse(cap, stride=stride)
     Rg = gravity_align(cap.up_axis, cap.up_sign)
     pc.rotate(Rg, center=(0, 0, 0))
@@ -260,14 +272,20 @@ def run(capture_dir, out_dir, stride=None, command="python -m floorplan run"):
     allV = np.concatenate([r.polygon for r in rooms]) if rooms else np.zeros((1, 2))
     ext = np.ptp(allV, axis=0)
 
+    if not drift:
+        warnings.append({"code": "stage_not_implemented", "affects": ["property_plan"],
+                         "message": "drift correction disabled for this run: poses used as-is"})
     warnings += [
-        {"code": "stage_not_implemented", "message": "drift correction not implemented yet: poses used as-is",
-         "affects": ["property_plan"]},
         {"code": "stage_not_implemented", "message": "door and window detection on walls not implemented; "
          "only passages between segmented rooms are reported", "affects": ["openings"]},
         {"code": "stage_not_implemented", "message": "damage detection not implemented", "affects": ["damage_regions"]},
     ]
 
+    if diag is not None:
+        snapped = [e for r in rooms for e in r.edges if e.snapped]
+        diag["face_concentration_median"] = float(np.median([e.concentration for e in snapped])) if snapped else None
+        diag["face_std_median_mm"] = float(1000 * np.median([e.face_std for e in snapped])) if snapped else None
+        diag["snapped_edges"] = len(snapped)
     render_plan(rooms, g, wall, out_dir / "plan.png")
     cfg_hash = hashlib.sha256(json.dumps(CONFIG, sort_keys=True).encode()).hexdigest()[:16]
     doc = {
@@ -286,8 +304,7 @@ def run(capture_dir, out_dir, stride=None, command="python -m floorplan run"):
                           "bounding_extent": {"x": _meas(ext[0], CONFIG["sys_face_m"] * 1.414),
                                               "y": _meas(ext[1], CONFIG["sys_face_m"] * 1.414)},
                           "max_room_overlap_m2": round(_overlap_m2(rooms, g), 4), "unplaced_rooms": [],
-                          "drift_correction": {"method": "none", "enabled": False, "loop_closures": None,
-                                               "residual_before_m": None, "residual_after_m": None}},
+                          "drift_correction": drift_doc},
         "damage_regions": [], "concealed_damage_flags": [], "scope_line_items": [],
         "quality": {"warnings": warnings},
         "artifacts": {"rendered_plan": str(out_dir / "plan.png"), "per_room_plans": [], "debug_dir": None},

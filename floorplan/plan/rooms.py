@@ -50,6 +50,7 @@ class Edge:
     n_support: int = 0      # wall points supporting the snapped face
     face_std: float = 0.0   # m, spread of those points
     snapped: bool = False
+    concentration: float = 0.0  # share of nearby wall points within 2 cm of the face (doubled walls lower it)
 
 
 @dataclass
@@ -233,6 +234,7 @@ def snap_edges(edges, verts, P, N, g: Grid, mask):
         e.coord = e.coord + face * -inward
         e.n_support = int(near.sum())
         e.face_std = float(1.4826 * np.median(np.abs(rel[w][near] - face)))
+        e.concentration = float(near.sum() / w.sum())
         e.snapped = True
     return edges
 

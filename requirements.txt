@@ -5,3 +5,5 @@ pillow
 open3d
 jsonschema
 pytest
+opencv-python-headless
+scikit-image

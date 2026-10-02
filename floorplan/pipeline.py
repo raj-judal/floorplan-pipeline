@@ -287,6 +287,16 @@ def run(capture_dir, out_dir, stride=None, command="python -m floorplan run", dr
         diag["face_std_median_mm"] = float(1000 * np.median([e.face_std for e in snapped])) if snapped else None
         diag["snapped_edges"] = len(snapped)
     render_plan(rooms, g, wall, out_dir / "plan.png")
+    # debug artefacts for the benchmark: the rotation from the capture's world
+    # frame to the plan frame, and the fused cloud in the plan frame
+    dbg = out_dir / "debug"
+    dbg.mkdir(exist_ok=True)
+    (dbg / "alignment.json").write_text(json.dumps(
+        {"R_world_to_plan": (Ry @ Rg).round(12).tolist(), "yaw_deg": float(np.degrees(yaw)),
+         "floor_z": fz, "drift_correction": drift}, indent=1))
+    import open3d as o3d
+    pc_plan = o3d.geometry.PointCloud(o3d.utility.Vector3dVector(P))
+    o3d.io.write_point_cloud(str(dbg / "fused_plan_frame.ply"), pc_plan)
     cfg_hash = hashlib.sha256(json.dumps(CONFIG, sort_keys=True).encode()).hexdigest()[:16]
     doc = {
         "schema_version": SCHEMA_VERSION,
@@ -307,7 +317,7 @@ def run(capture_dir, out_dir, stride=None, command="python -m floorplan run", dr
                           "drift_correction": drift_doc},
         "damage_regions": [], "concealed_damage_flags": [], "scope_line_items": [],
         "quality": {"warnings": warnings},
-        "artifacts": {"rendered_plan": str(out_dir / "plan.png"), "per_room_plans": [], "debug_dir": None},
+        "artifacts": {"rendered_plan": str(out_dir / "plan.png"), "per_room_plans": [], "debug_dir": str(dbg)},
     }
     (out_dir / "output.json").write_text(json.dumps(doc, indent=2))
     return doc

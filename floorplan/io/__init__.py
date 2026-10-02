@@ -14,7 +14,13 @@ def load_capture(root) -> Capture:
         return load_stray(root)
     if is_arkitscenes(root):
         return load_arkitscenes(root)
-    raise ValueError(f"{root}: not a recognised capture folder (expected Stray Scanner or ARKitScenes layout)")
+    inner = [d for d in root.iterdir() if d.is_dir() and (is_stray(d) or is_arkitscenes(d))]
+    if len(inner) == 1:
+        raise ValueError(f"{root}: the capture is one level deeper; use {inner[0]}")
+    found = sorted(p.name for p in root.iterdir())[:10]
+    raise ValueError(f"{root}: not a recognised capture folder. Expected a Stray Scanner export "
+                     f"(odometry.csv + depth/) or an ARKitScenes capture (lowres_depth/ + *.traj); "
+                     f"found: {found}")
 
 
 __all__ = ["Capture", "FrameMeta", "backproject", "load_capture"]

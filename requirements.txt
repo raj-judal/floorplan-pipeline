@@ -7,3 +7,4 @@ jsonschema
 pytest
 opencv-python-headless
 scikit-image
+matplotlib

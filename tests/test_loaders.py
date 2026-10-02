@@ -45,3 +45,13 @@ def test_backproject_opencv_convention_and_range_correction():
     assert W[(v == 99) & (u == 50)][0, 1] > 0
     W2, rng2, _, _ = backproject(depth, K, np.eye(4), range_correction=lambda r: np.full_like(r, 0.01))
     np.testing.assert_allclose(rng2 - rng, 0.01, atol=1e-6)
+
+
+def test_floor_is_lowest_surface_not_largest():
+    from floorplan.plan.rooms import floor_height
+    rng = np.random.default_rng(0)
+    floor = np.c_[rng.uniform(0, 4, (2000, 2)), np.zeros(2000)]
+    ceiling = np.c_[rng.uniform(0, 4, (6000, 2)), np.full(6000, 2.4)]   # ceiling has 3x more points
+    P = np.vstack([floor, ceiling])
+    N = np.tile([0, 0, 1.0], (len(P), 1))
+    assert abs(floor_height(P, N)) < 0.01

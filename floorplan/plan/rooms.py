@@ -64,9 +64,12 @@ class Room:
 
 
 def floor_height(P, N):
+    """Lowest well-supported horizontal surface. Not the largest one: in rooms
+    where the ceiling was scanned more than the floor, the largest is the
+    ceiling (seen on ARKitScenes 42444966)."""
+    from ..geometry.planes import _peaks
     hz = np.abs(N[:, 2]) > 0.95
-    h, e = np.histogram(P[hz, 2], bins=np.arange(P[:, 2].min(), P[:, 2].max() + 0.01, 0.01))
-    return float(e[np.argmax(h)] + 0.005)
+    return float(_peaks(P[hz, 2], min_share=0.02)[0])
 
 
 def build_grids(P, N, floor_z):

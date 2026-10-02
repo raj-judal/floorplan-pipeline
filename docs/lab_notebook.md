@@ -68,3 +68,10 @@ Correction test: range-dependent offset calibrated on 42444966 only, pushed back
 | 42444968 (held out) | -24.8 mm | -12.2 mm |
 
 Open questions: one room and one device only; iPhone may differ; ~10 mm residual, possibly from grazing views of floor and ceiling.
+
+## 2026-10-03: Shared loaders
+
+- `floorplan/io/` defines one capture model for all formats: OpenCV camera convention, camera-to-world poses, intrinsics at depth resolution, depth in metres, pixels read lazily.
+- Stray Scanner loader uses per-frame intrinsics from `odometry.csv`, scaled from 1920x1440 to the depth resolution.
+- ARKitScenes loader inverts the world-to-camera `.traj` and interpolates poses to each depth timestamp (slerp + linear), rejecting gaps over 0.15 s. Usable frames rose from about 80% (nearest pose within 20 ms) to 1120 of 1129 and 745 of 754.
+- `tools/inspect_capture.py` loads any capture, fuses it and prints a summary; unit tests in `tests/` cover pose inversion, interpolation, gap rejection and back-projection.

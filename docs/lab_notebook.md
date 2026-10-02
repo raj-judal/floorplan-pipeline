@@ -101,3 +101,23 @@ Results on the company sample data (no ground truth; visual check against the po
 Timing: fuse + align is 17 s for 1,715 frames at stride 3, but 190 s for the 9,745-frame apartment at stride 5. Too slow for a comfortable live walk-in; needs a faster path.
 
 Known failure modes to report: unentered rooms, wide openings merging rooms, glass/tile false walls, vertical drift.
+
+## 2026-10-03: One command per capture (LiDAR tier)
+
+- `python -m floorplan run CAPTURE --tier lidar --out OUT` writes `output.json` (schema 1.1.0, validated on every run) and `plan.png`.
+- Schema 1.1.0 adds warning codes `ceiling_not_observed`, `room_not_entered`, `feature_not_implemented`, so missing capabilities are stated in the output rather than silently absent.
+- Error budget v0 in `floorplan/config.py` (hashed into every output): 12 mm per snapped wall face, 40 mm per grid-only face, 15 mm ceiling when observed, prior 2.25 to 3.10 m (90%) when the ceiling covers under 30% of the room.
+- Ceiling height is the footprint mean of (ceiling plane minus floor plane) per room, which handles tilt.
+- Bug fixed: reported edge lengths came from the pre-snap grid outline; they now come from the snapped walls (single-room R1 changed from 1.79 x 2.80 m to 1.91 x 3.00 m).
+- Bug fixed: floor height was the most populated horizontal level; on ARKitScenes the ceiling has more points than the floor, so the "floor" was the ceiling. Now the lowest well-supported level.
+- Bug fixed: sliver edges (4 mm) left after snapping are merged away, keeping the better-supported wall face.
+- First pipeline ceiling numbers vs laser (2329.6 mm): 2314.4 mm (90% interval 2289.8 to 2339.1, contains truth) and 2303.1 mm (2278.5 to 2327.8, misses truth by 1.8 mm). Calibration needs work.
+
+## 2026-10-03: One command per capture (LiDAR tier)
+
+- `python -m floorplan run CAPTURE --tier lidar --out OUT` writes `output.json` and `plan.png`, then validates the JSON. First valid end-to-end output on the sample single-room capture in 18.5 s (stride 3).
+- Schema bumped to v1.1.0: new warning codes `ceiling_not_observed`, `room_not_entered`, `edge_not_snapped`, `stage_not_implemented`, so missing stages are declared instead of returning empty-but-confident output.
+- Post-snap cleanup removes sliver edges (under 6 cm between near-collinear neighbours); wall spans are recomputed from the snapped neighbours.
+- Error budget (`floorplan/pipeline.py` CONFIG, provisional until calibrated on the benchmark): 15 mm per snapped wall face, 50 mm per unsnapped edge, 20 mm on observed ceiling height. Wall length sigma combines its two bounding faces.
+- Unobserved ceiling: reported as a bounded interval (highest observed surface to a 3.2 m residential prior) with a warning, never as a confident number.
+- Room-to-room passages come from where room masks touch; currently one of them lands on an unsnapped false boundary inside the bedroom (the bedroom split), a known failure.

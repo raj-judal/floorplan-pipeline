@@ -9,3 +9,5 @@ opencv-python-headless
 scikit-image
 matplotlib
 pillow-heif
+torch
+transformers

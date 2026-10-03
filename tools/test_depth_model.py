@@ -67,7 +67,7 @@ def main():
     n = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     if n <= 0:
         sys.exit("could not read rgb.mp4")
-    raw, corr = [], []
+    raw, corr, hms = [], [], []
     for i in np.linspace(n * 0.05, n * 0.95, a.frames).astype(int):
         cap.set(cv2.CAP_PROP_POS_FRAMES, int(i))
         ok, bgr = cap.read()
@@ -94,10 +94,22 @@ def main():
         else:
             c = s * a.height / hm
             corr.append(c)
+            hms.append(hm)
             print(f"frame {i:5d}: raw scale {s:.3f}  camera height in model {hm:.2f} m  corrected scale {c:.3f}")
     raw, corr = np.array(raw), np.array(corr)
     print(f"\nraw      : {len(raw)} frames, median {np.median(raw):.3f}, spread (10-90%) {np.percentile(raw, 10):.3f}-{np.percentile(raw, 90):.3f}")
     if len(corr):
         print(f"corrected: {len(corr)} frames, median {np.median(corr):.3f}, spread (10-90%) {np.percentile(corr, 10):.3f}-{np.percentile(corr, 90):.3f}")
+        # the pipeline's plausibility rule (floorplan/thin/rooms_from_images.py PLAUSIBLE) rejects tabletop 'floors'
+        hms = np.array(hms)
+        keep = (hms / a.height >= 0.9) & (hms / a.height <= 1.8)
+        v = corr[keep]
+        print(f"plausible: {len(v)} frames, median {np.median(v):.3f}, spread (10-90%) {np.percentile(v, 10):.3f}-{np.percentile(v, 90):.3f}, 90% within {100 * np.percentile(np.abs(v - 1), 90):.0f}%")
+        rng = np.random.default_rng(0)
+        bs = [np.median(rng.choice(v, len(v))) for _ in range(5000)]
+        print(f"whole-capture scale {np.median(v):.3f}, bootstrap 90% interval {np.percentile(bs, 5):.3f}-{np.percentile(bs, 95):.3f}")
+        for n in (3, 5, 8):
+            sub = [np.median(rng.choice(v, n, replace=False)) for _ in range(5000)]
+            print(f"  room from {n} images: 90% within {100 * np.percentile(np.abs(np.array(sub) - 1), 90):.1f}%")
 if __name__ == "__main__":
     main()

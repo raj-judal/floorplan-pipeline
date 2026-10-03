@@ -33,9 +33,9 @@ Status: Done / Partial / Not done. Every number cited is in `docs/benchmark_repo
 | Fix loop (Part 4) | `docs/fix_declaration.md`, `docs/fix_postmortem_v1.md` | Declaration before code; shipped fix; worse result; post-mortem; tags `fix-loop-before`, `fix-loop-v1-after` | Done (fix did not move the gate) |
 | Process evidence (Part 5) | git history | Commits in working order | Done |
 | README to running in under 15 min | `README.md`, `requirements-lock.txt` | Install + one command | Done: fresh clone to validated LiDAR run in 5.6 min (warm pip cache); video tier also ran on the clean install |
-| Reproduction bundle | `docs/reproduce.md`, `benchmarks/` | Commands + reference files | Partial: see reproduce.md |
+| Reproduction bundle | `docs/reproduce.md`, `benchmarks/`, `tools/`, `research/` | Commands regenerating every reported number, with expected values | Done for all reported numbers; ARKitScenes and company data are fetched, not redistributed |
 | Benchmark report | `docs/benchmark_report.md` | Gates, repeatability, drift, timing | Done (LiDAR); thin tiers only partly |
-| Technical report (max 6 pages) | `docs/technical_report.md` | | In progress |
+| Technical report (max 6 pages) | `docs/technical_report.md` | Architecture, tiers, drift, error budget, calibration, fix loop, failure modes | Done |
 | Raw benchmark data | ARKitScenes (official script), company sample data | IDs and crop box in `benchmarks/` | Partial: no app exports |
 | Pretrained models/datasets disclosed | `output.json` pipeline.models; report | Depth Anything V2 Metric Indoor Small; ARKitScenes | Done |
 | Runs without our infrastructure; weights fetched by script | `floorplan/thin/pipeline_thin.py` | Weights downloaded from Hugging Face on first run | Done |

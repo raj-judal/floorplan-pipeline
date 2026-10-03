@@ -168,3 +168,21 @@ Lesson from attempt 1 applied: test the mechanism before writing a declaration.
 Hypothesis 2: the second wall copy comes from short pose glitches (a few seconds of frames placed ~6 cm off), so re-aligning each half-second segment against what other passes saw would merge the copies.
 Detection test on 42444968 (no gate measured): if a whole segment were mis-posed by 6 cm, all its surfaces would disagree with other passes. They do not: every segment, including the 2-6 s segments that produced the outer copy of R1-W4, has a median distance of 1.2 to 1.9 cm to other passes, the same as everywhere else. ICP "corrections" of 2 to 22 cm were flagged on almost every segment (72 of 147), which is ICP sliding along planar walls, not glitches. The detector cannot separate glitch segments, and the outer copy is local to the wall rather than a whole-frame pose error.
 Result: hypothesis 2 refuted before any declaration or gate measurement; code removed. The cause of the doubled walls is still unknown (candidates: viewpoint-dependent depth error on specific surfaces, or something that moved in the scene).
+
+## 2026-10-03: Calibration of the error budget (v0 -> v1)
+
+Problem: v0 intervals (15 mm per wall face, a guess) contained the laser truth for only 4 of 10 measurements (target 9 of 10). Confident garbage caps the total score, so this outranks any single gate.
+
+Tried first, rejected: quality-aware intervals. If clean walls could be told apart from doubled ones, clean walls could keep tight intervals. Measured: the share of a wall's points within 2 cm of its face does not predict its error (correlation 0.03 over 14 faces; R1-W12 is the most concentrated face, 0.85, and is 57 mm off). No honest per-wall signal, so the widening is uniform.
+
+v1 budget (`floorplan/pipeline.py` CONFIG): 35 mm per wall face (90% of wall-length errors within ~80 mm), 60 mm per unsnapped edge, ceiling unchanged at 20 mm, opening width 50 mm (uncalibrated: no opening ground truth).
+
+| | v0 | v1 |
+|---|---|---|
+| Truths inside 90% intervals | 4 of 10 (0.40) | 9 of 10 (0.90) |
+| Measured values | unchanged | unchanged |
+
+Limits, stated plainly:
+- In-sample: v1 is fitted to the same 10 values it is scored on, so 0.90 is close to guaranteed here.
+- Leave-one-capture-out shows how fragile it is: calibrating on 42444966 alone gives a 26 mm wall-length sigma, which covers 0 of 4 walls in 42444968; calibrating on 42444968 alone gives 53 mm, which covers 4 of 4 in 42444966. Two captures of one room are not enough to calibrate; more laser rooms would be.
+- All 8 wall errors are negative (walls too short, mean -49 mm) and the intervals are centred on the biased values; width, not centring, provides the coverage. The bias is not corrected because its estimate is unstable between captures (-29 vs -70 mm mean).

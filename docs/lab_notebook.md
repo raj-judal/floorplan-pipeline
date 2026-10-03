@@ -193,3 +193,10 @@ Raw model scale vs LiDAR (30 upright frames, single-room capture): median 1.30, 
 Correction: find the floor in the model's own depth (lowest upward-facing layer) and rescale each frame so the camera is 1.40 m above it. Corrected (24 frames with a visible floor): median 1.003. Three frames mistook a tabletop for the floor (camera height 0.83-1.07 model units); rejecting camera heights outside 1.3-2.5 model units leaves 21 frames, median 0.998, 90% within 14%.
 Caveats: the 1.40 m prior matches this capture (true median 1.41 m, range 1.31-1.55); a different holding height shifts all dimensions ~10%, so the error budget must include it. The rejection band was chosen after seeing this data and must be checked on another capture. Gravity came from the capture's poses; plain photos and video must estimate it from the image.
 Structure-from-motion and RGB-D odometry were tried for the video tier first: SfM fragmented on white walls (largest fragment 17 of 112 frames); RGB-D odometry with real LiDAR depth drifted 3-4 m over a 12-14 m walk. Long-range tracking from plain video is not used.
+## 2026-10-03: Gravity from image geometry (thin tiers)
+Plain photos and video have no gravity. Estimated from depth geometry alone, tested with LiDAR depth as a stand-in for the model, against the phone's real gravity (60 frames per capture, 3 captures).
+- Image orientation alone (nearest image axis, what metadata gives) is off by a median 27-32 deg: phones are tilted down while scanning.
+- Refining from horizontal surfaces only: median 1.9 deg but 10% of frames off by 25 deg or more (starts too far off).
+- RANSAC over surface normals (a hypothesis 'up' must explain the most surfaces as parallel or perpendicular to it): median 0.8 deg, but ~10% of frames off by ~90 deg, because box-shaped rooms look the same under axis swaps.
+- Fix: build the room's three axes and take the one closest to the metadata guess. Result: median 0.49-0.74 deg, 90% within 1.35-1.87 deg; 2 of 180 frames failed (15 and 90 deg), to be outvoted when a room's photos are combined.
+Still to measure: the same with model depth instead of LiDAR.

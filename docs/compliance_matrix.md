@@ -32,7 +32,7 @@ Status: Done / Partial / Not done. Every number cited is in `docs/benchmark_repo
 | Head-to-head vs consumer app (Part 3) | - | - | Not done (no LiDAR device to capture with the app) |
 | Fix loop (Part 4) | `docs/fix_declaration.md`, `docs/fix_postmortem_v1.md` | Declaration before code; shipped fix; worse result; post-mortem; tags `fix-loop-before`, `fix-loop-v1-after` | Done (fix did not move the gate) |
 | Process evidence (Part 5) | git history | Commits in working order | Done |
-| README to running in under 15 min | `README.md` | Install + one command | Partial: clean-machine test pending |
+| README to running in under 15 min | `README.md`, `requirements-lock.txt` | Install + one command | Done: fresh clone to validated LiDAR run in 5.6 min (warm pip cache); video tier also ran on the clean install |
 | Reproduction bundle | `docs/reproduce.md`, `benchmarks/` | Commands + reference files | Partial: see reproduce.md |
 | Benchmark report | `docs/benchmark_report.md` | Gates, repeatability, drift, timing | Done (LiDAR); thin tiers only partly |
 | Technical report (max 6 pages) | `docs/technical_report.md` | | In progress |

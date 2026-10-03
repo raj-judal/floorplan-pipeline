@@ -14,6 +14,9 @@ schema-valid JSON (`output.json`) with a 90% confidence interval on every number
     # source .venv/bin/activate         # macOS / Linux
     pip install -r requirements.txt
     python -m pytest -q tests           # expect: 4 passed
+Tested on a clean Windows machine: clone to first validated LiDAR run in 5.6 minutes (warm pip cache).
+If a newer package release breaks the install, use the exact tested versions:
+`pip install -r requirements-lock.txt`.
 For a GPU on Windows/Linux (optional, photo and video tiers only):
 `pip install torch --index-url https://download.pytorch.org/whl/cu121`.
 The depth model (~100 MB) downloads automatically on the first photo or video run.

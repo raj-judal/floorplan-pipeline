@@ -24,6 +24,6 @@ Pick ONE tier. Follow every step exactly. Questions about a step mean the step i
 ## What each step is for (evidence in docs/lab_notebook.md)
 - Enter every room; sweep walls to the ceiling: rooms not entered, or with walls seen only below ~2 m, were missed or merged in the sample scans (floor-only scan had 4x fewer wall points above 1.5 m).
 - End where you started: lets drift correction close the loop; the scans that ended away from the start drifted more.
-- 0.5x, landscape, back to the wall, slightly down: in rendered tests, level 1x photos never showed the floor (no scale); 0.5x tilted ~10 deg down showed the floor in 4 of 4 views.
+- 0.5x, landscape, back to the wall, slightly down: in rendered tests, level 1x photos showed the floor in 0-1 of 4 views per room (no scale); 0.5x tilted ~10 deg down raised that to 1-4 of 4.
 - 6-8 photos per room: scale accuracy per room is about 12% with 3 photos, 7.7% with 5, 5.6% with 8 (90% of rooms).
 - Chest height: real-world scale for photos and video assumes the camera is ~1.40 m above the floor.

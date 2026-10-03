@@ -144,6 +144,8 @@ def run_thin(capture: Path, out_dir: Path, tier: str, depth_fn=None, focal35_def
         {"code": "room_unstitched", "affects": [d["id"] for d in room_docs],
          "message": "rooms are measured individually and laid out side by side; they are NOT stitched into one plan (thin-tier assembly not delivered)"},
         {"code": "stage_not_implemented", "affects": ["openings"], "message": "openings are not detected in the photo and video tiers"},
+        {"code": "insufficient_overlap", "affects": [d["id"] for d in room_docs],
+         "message": "photo/video room dimensions are rough: on rendered protocol views their 90% intervals contained 9 of 13 true dimensions; large or L-shaped rooms are underestimated by 30-45%"},
         {"code": "stage_not_implemented", "affects": ["damage_regions"], "message": "damage detection not implemented"},
     ]
     total = sum(d["floor_area"]["value"] for d in room_docs)

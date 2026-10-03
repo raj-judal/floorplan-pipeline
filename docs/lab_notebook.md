@@ -213,3 +213,9 @@ Sample captures are LiDAR sweeps (camera pitch median -31 deg, close to walls): 
 - Protocol consequence: 0.5x camera, landscape, back to the middle of each wall, tilted slightly down.
 - End-to-end --tier photo on five rendered rooms: schema-valid. Near-rectangular rooms (6-10 walls): truth inside the intervals. L-shaped rooms (10-16 walls): estimates ~3 m vs up to 6 m; the rectangle model fails. Protocol mitigation: photograph each rectangular part of an L-shaped room as its own room folder.
 Not measured: end-to-end accuracy on real protocol photos (no device).
+## 2026-10-03: Correction - thin-tier rendered test reproduced from committed code
+The rendered protocol-view results above came from a prototype script using prototype room shapes. Rerun from committed code (`research/thin_rendered_protocol_test.py` on a current full-scan LiDAR run, stride 10):
+- Floor visible: 1x level 0-1 of 4 views per room; 0.5x level 1-3 of 4; 0.5x tilted 10 deg down 1-4 of 4. Protocol direction confirmed; "4 of 4" was not general.
+- Dimensions (0.5x tilted) vs LiDAR-tier boxes: 90% intervals contained 7 of 13. Larger and L-shaped rooms come out 30-45% short (a view measures only what it sees); some estimates overshoot by up to ~34% (spans through doorways).
+- Added GEOMETRY_SIGMA = 0.22 (relative) to thin-tier uncertainty: coverage 9 of 13. Still overconfident; reaching 90% would need about +/-75%. Every photo/video output now warns that dimensions are rough.
+Gravity check reproduced exactly from committed code (`research/thin_gravity_check.py`): medians 0.66 / 0.74 / 0.49 deg.

@@ -16,6 +16,9 @@ H_PRIOR = 1.40                 # m, protocol: phone held at chest height
 H_PRIOR_SIGMA = 0.07           # m, holding height varies (1.31-1.55 m in the sample capture)
 PLAUSIBLE = (0.9, 1.8)         # camera height in model units / H_PRIOR (tabletop rejection)
 FRAME_SCALE_SIGMA = 0.146      # relative, per frame, after correction (held-out capture: 90% within 24%)
+GEOMETRY_SIGMA = 0.22          # relative: a view measures only the part of the room it sees. Calibrated on
+                               # rendered protocol views of the sample apartment (90% of errors within ~40%);
+                               # without it only 7 of 13 truths fell inside the 90% intervals (lab notebook)
 WALL_BAND = (0.6, 2.3)         # m above floor; the outermost wall per side is used, so furniture in front is skipped
 MIN_WALL_POINTS = 200
 MIN_EXTENT = 0.5               # m of wall seen along its length
@@ -107,7 +110,8 @@ def combine_room(measures):
     of n per-image scales) plus the camera-height prior, both relative."""
     spans = np.array([s for m in measures for s in m.spans])
     n_scale = sum(m.scale is not None for m in measures)
-    rel = np.hypot(1.25 * FRAME_SCALE_SIGMA / np.sqrt(max(n_scale, 1)), H_PRIOR_SIGMA / H_PRIOR)
+    rel = np.sqrt((1.25 * FRAME_SCALE_SIGMA / np.sqrt(max(n_scale, 1))) ** 2 + (H_PRIOR_SIGMA / H_PRIOR) ** 2
+                  + GEOMETRY_SIGMA ** 2)
     dims = []
     if len(spans) >= 2:
         lo, hi = np.percentile(spans, 25), np.percentile(spans, 75)

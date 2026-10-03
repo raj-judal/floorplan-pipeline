@@ -38,8 +38,8 @@ Cause (fix loop): two copies of the same wall ~6 cm apart in the iPad data, seen
 | After camera-height correction, same capture | median 0.998; 90% of frames within 14% |
 | Same, held-out capture (rule not re-tuned) | median 0.988 (bootstrap 90% interval 0.948-1.007) |
 | Gravity from image geometry (LiDAR stand-in depth, 180 frames) | median 0.49-0.74 deg; 2 frames failed |
-| Rendered protocol views of the real apartment scan, near-rectangular rooms | truth inside intervals (e.g. 2.27 x 2.47 m vs 2.13 x 2.56 m) |
-| Same, L-shaped rooms | fails: ~3 m vs up to 6 m |
+| Rendered protocol views of the real apartment scan (7 rooms, `research/thin_rendered_protocol_test.py`): floor visible | 1x level: 0-1 of 4 views per room; 0.5x tilted 10 deg down: 1-4 of 4 |
+| Same, room dimensions vs LiDAR-tier box, 0.5x tilted | 90% intervals contained 7 of 13 before, 9 of 13 after adding a geometry term; larger rooms underestimated by 30-45% |
 | Real protocol photos or video | not measured (no device) |
 ## Head-to-head vs consumer app
 Not performed: it needs the same rooms captured with our pipeline and with a consumer app on a LiDAR iPhone; none was available.

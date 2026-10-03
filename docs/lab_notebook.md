@@ -200,3 +200,9 @@ Plain photos and video have no gravity. Estimated from depth geometry alone, tes
 - RANSAC over surface normals (a hypothesis 'up' must explain the most surfaces as parallel or perpendicular to it): median 0.8 deg, but ~10% of frames off by ~90 deg, because box-shaped rooms look the same under axis swaps.
 - Fix: build the room's three axes and take the one closest to the metadata guess. Result: median 0.49-0.74 deg, 90% within 1.35-1.87 deg; 2 of 180 frames failed (15 and 90 deg), to be outvoted when a room's photos are combined.
 Still to measure: the same with model depth instead of LiDAR.
+## 2026-10-03: Thin tiers - assembling many images into one model (failed, dropped)
+Pairwise matching of snapshots (gravity-aligned, camera-height-scaled, walls rotated axis-aligned, so heading differs by 90-degree steps; offset by cross-correlating top-down wall maps), LiDAR stand-in depth, single-room capture:
+- Wall matching alone picks the wrong 90-degree step for box-shaped rooms (rotated wall maps look alike).
+- With a smallest-turn rule (frames a fraction of a second apart turn little): consecutive pairs at 3 fps, turn right in 29 of 31; offset error median 2-3 cm; but up to 1.8 m on long plain walls. A plausible-movement limit (0.8 m per step) cut the tail; still 11 of 81 pairs over 20 cm.
+- Chaining a whole video (each frame matched to its next 3, all positions solved jointly with a robust loss): failed, camera path error median 1.1-1.3 m. One turn over 45 degrees between samples (4 occurred at 3 fps) flips all later headings by 90 degrees. Changing the heading reference and sampling at 5 fps did not fix it.
+Decision: whole-sequence assembly is dropped. Thin tiers measure each room from its own images, with the capture protocol providing the views needed.

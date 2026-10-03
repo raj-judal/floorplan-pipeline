@@ -8,3 +8,4 @@ pytest
 opencv-python-headless
 scikit-image
 matplotlib
+pillow-heif

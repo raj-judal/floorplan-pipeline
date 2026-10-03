@@ -1,4 +1,4 @@
-"""Command line: one command per capture.
+﻿"""Command line: one command per capture.
 
     python -m floorplan run CAPTURE_DIR --tier lidar --out OUT_DIR
 """
@@ -19,12 +19,14 @@ def main(argv=None):
     r.add_argument("--no-drift", action="store_true", help="disable drift correction (for the ablation)")
     a = ap.parse_args(argv)
 
-    if a.tier != "lidar":
-        sys.exit(f"tier '{a.tier}' is not implemented yet")
-    from .pipeline import run
     out = a.out or Path("out") / a.capture.name
     cmd = "python -m floorplan " + " ".join(argv if argv is not None else sys.argv[1:])
-    doc = run(a.capture, out, stride=a.stride, command=cmd, drift=not a.no_drift)
+    if a.tier == "lidar":
+        from .pipeline import run
+        doc = run(a.capture, out, stride=a.stride, command=cmd, drift=not a.no_drift)
+    else:
+        from .thin.pipeline_thin import run_thin
+        doc = run_thin(a.capture, out, a.tier, command=cmd)
 
     sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
     from validate_output import main as validate

@@ -1,11 +1,13 @@
-﻿# Phone capture to dimensioned floor plan
+# Phone capture to dimensioned floor plan
 One command turns a phone capture into a dimensioned floor plan (`plan.png`) and a
 schema-valid JSON (`output.json`) with a 90% confidence interval on every number.
 - **LiDAR tier** (Stray Scanner on a Pro iPhone/iPad): rooms, wall lengths, ceiling heights,
   passages between rooms, stitched multi-room plan, drift correction.
 - **Photo and video tiers** (any iPhone 15+): each room measured on its own from images with a
   depth model; rough, and rooms are not stitched. Every output says so.
-- Not built: damage detection, door/window detection on walls. See `docs/compliance_matrix.md`.
+- Damage (LiDAR tier): open-vocabulary detection on video frames, placed on surfaces, with concealed-damage
+  rules and repair line items. Never tested on real damage in a captured room; every output says so.
+- Not built: door/window detection on walls. See `docs/compliance_matrix.md`.
 ## Install (about 10 minutes; Python 3.10 or newer)
     git clone https://github.com/raj-judal/floorplan-pipeline.git
     cd floorplan-pipeline

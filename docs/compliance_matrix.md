@@ -1,4 +1,4 @@
-﻿# Compliance matrix
+# Compliance matrix
 Status: Done / Partial / Not done. Every number cited is in `docs/benchmark_report.md` or `docs/lab_notebook.md`.
 | Requirement (brief) | File path | Artifact | Status |
 |---|---|---|---|
@@ -10,9 +10,9 @@ Status: Done / Partial / Not done. Every number cited is in `docs/benchmark_repo
 | Per-room plan: walls, ceiling height, floor area | `floorplan/pipeline.py`, `floorplan/plan/rooms.py` | `output.json` rooms[] | Done (LiDAR); Partial (thin tiers: rectangles) |
 | Openings | `floorplan/pipeline.py` | Passages between segmented rooms | Partial: no door/window detection on walls |
 | Stitched multi-room plan with adjacency | `floorplan/plan/rooms.py` | property_plan, adjacency | Done (LiDAR); Not done (photo, video) |
-| Damage regions with class and metric extent | - | - | Not done (declared in output warnings) |
-| Concealed-damage flags with rule | - | - | Not done |
-| Scope line items keyed to surfaces | `schema/capture_output.schema.json` | Schema supports it | Not done (no damage input) |
+| Damage regions with class and metric extent | `floorplan/damage/` | OWLv2 detection on video frames, projected onto surfaces, kept if seen in 2+ frames | Partial: LiDAR tier only; never tested on real damage in a captured room |
+| Concealed-damage flags with rule | `floorplan/damage/rules.py` | Five readable rules; each flag records rule_id and text | Partial: rules untested on real cases |
+| Scope line items keyed to surfaces | `floorplan/damage/rules.py` | Repair action per damage class, quantity with interval; inspect-cavity items from flags | Partial: quantities from detector boxes (+/-35%) |
 | Confidence interval on every measurement | `schema/`, `tools/validate_output.py` | Schema requires it; validator checks interval brackets value | Done |
 | One command per capture | `floorplan/__main__.py` | `python -m floorplan run CAPTURE --tier lidar|photo|video` | Done |
 | JSON to the published schema | `schema/capture_output.schema.json` | Own schema v1.1.0 (none was published to us) | Done |

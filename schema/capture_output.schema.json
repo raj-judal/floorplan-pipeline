@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.invalid/schema/capture_output/1.1.0",
-  "title": "Capture output contract v1.1.0",
+  "$id": "https://example.invalid/schema/capture_output/1.2.0",
+  "title": "Capture output contract v1.2.0",
   "description": "One JSON document per capture. Units are SI (metres, square metres). Every measured quantity is a Measurement object carrying a confidence interval. Room geometry lives in each room's own frame; transform_to_property places it in the stitched property frame. Z is up, floor plane is z = 0.",
   "type": "object",
   "required": [
@@ -19,7 +19,7 @@
   "additionalProperties": false,
   "properties": {
     "schema_version": {
-      "const": "1.1.0"
+      "const": "1.2.0"
     },
     "capture": {
       "type": "object",
@@ -457,7 +457,8 @@
                   "ceiling_not_observed",
                   "room_not_entered",
                   "edge_not_snapped",
-                  "stage_not_implemented"
+                  "stage_not_implemented",
+                  "detector_unvalidated"
                 ]
               },
               "message": {

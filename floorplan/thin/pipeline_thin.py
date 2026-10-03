@@ -1,4 +1,4 @@
-﻿"""Thin-tier command path: photo folders or per-room video clips -> output.json + plan.png.
+"""Thin-tier command path: photo folders or per-room video clips -> output.json + plan.png.
 Input layout (capture protocol):
   photo: CAPTURE/<room name>/*.jpg|jpeg|png|heic   one folder per room, 6-8 photos,
          0.5x camera, landscape, back to the middle of each wall, tilted slightly down
@@ -151,7 +151,7 @@ def run_thin(capture: Path, out_dir: Path, tier: str, depth_fn=None, focal35_def
     total = sum(d["floor_area"]["value"] for d in room_docs)
     s_total = float(np.sqrt(sum(((d["floor_area"]["ci"]["upper"] - d["floor_area"]["value"]) / Z90) ** 2 for d in room_docs)))
     doc = {
-        "schema_version": "1.1.0",
+        "schema_version": "1.2.0",
         "capture": {"capture_id": capture.name, "tier": tier, "device": {"model": "unknown (from image metadata if present)", "os_version": None},
                     "capture_app": {"name": "Camera (native)", "version": None}, "source_files": [str(capture)], "captured_at": None},
         "pipeline": {"version": __version__, "git_commit": None, "command": command,

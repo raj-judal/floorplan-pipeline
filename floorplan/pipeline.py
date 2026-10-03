@@ -27,7 +27,7 @@ from .plan.render import render_plan
 from .plan.rooms import (RES, _vertices, build_grids, extract_room_polygons, floor_height, free_space,
                          segment_rooms)
 
-SCHEMA_VERSION = "1.1.0"
+SCHEMA_VERSION = "1.2.0"
 Z90 = 1.645
 CONFIG = {
     # Error budget v1, calibrated 2026-10-03 on the LiDAR benchmark
@@ -43,6 +43,9 @@ CONFIG = {
     "ceiling_upper_prior_m": 3.2,
     "opening_width_sigma_m": 0.05,   # no ground truth for openings yet: uncalibrated
     "drift_correction": True,
+    "damage": True,
+    "damage_frames": 40,          # ~3.4 s each with OWLv2 on a 4 GB T500
+    "damage_threshold": 0.3,      # false alarms 25 -> 5 per 60 frames vs 0.2, water-stain recall kept at 75% (lab notebook)
 }
 
 
@@ -159,7 +162,8 @@ def _overlap_m2(rooms, g):
     return float(worst)
 
 
-def run(capture_dir, out_dir, stride=None, command="python -m floorplan run", drift=None, drift_result=None, diag=None):
+def run(capture_dir, out_dir, stride=None, command="python -m floorplan run", drift=None, drift_result=None, diag=None,
+        damage=None, damage_detector=None):
     t0 = time.time()
     capture_dir, out_dir = Path(capture_dir), Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -283,8 +287,17 @@ def run(capture_dir, out_dir, stride=None, command="python -m floorplan run", dr
     warnings += [
         {"code": "stage_not_implemented", "message": "door and window detection on walls not implemented; "
          "only passages between segmented rooms are reported", "affects": ["openings"]},
-        {"code": "stage_not_implemented", "message": "damage detection not implemented", "affects": ["damage_regions"]},
     ]
+    damage = CONFIG["damage"] if damage is None else damage
+    dmg, flags, scope = [], [], []
+    if damage:
+        from .damage.run import detect_damage
+        dmg, flags, scope, dw, _ = detect_damage(cap, Ry @ Rg, fz, room_docs, CONFIG["damage_frames"],
+                                                 CONFIG["damage_threshold"], detector=damage_detector)
+        warnings += dw
+    else:
+        warnings.append({"code": "stage_not_implemented", "affects": ["damage_regions"],
+                         "message": "damage detection disabled for this run (--no-damage)"})
 
     if diag is not None:
         snapped = [e for r in rooms for e in r.edges if e.snapped]
@@ -320,7 +333,7 @@ def run(capture_dir, out_dir, stride=None, command="python -m floorplan run", dr
                                               "y": _meas(ext[1], CONFIG["sys_face_m"] * 1.414)},
                           "max_room_overlap_m2": round(_overlap_m2(rooms, g), 4), "unplaced_rooms": [],
                           "drift_correction": drift_doc},
-        "damage_regions": [], "concealed_damage_flags": [], "scope_line_items": [],
+        "damage_regions": dmg, "concealed_damage_flags": flags, "scope_line_items": scope,
         "quality": {"warnings": warnings},
         "artifacts": {"rendered_plan": str(out_dir / "plan.png"), "per_room_plans": [], "debug_dir": str(dbg)},
     }

@@ -1,4 +1,4 @@
-﻿# Benchmark report
+# Benchmark report
 Ground truth: Faro laser scans from ARKitScenes visit 421383 (two iPad Pro LiDAR captures of one open-plan kitchen/dining room). Ground truth is measured from laser points; the pipeline's walls only say where to look. Registration iPad-to-laser is rigid with no scale (ICP RMSE ~15 mm). Reports: `benchmarks/arkitscenes_421383/lidar_benchmark_*.json`.
 ## LiDAR tier gates
 | Gate | Result | Pass |
@@ -50,3 +50,15 @@ Not performed: it needs the same rooms captured with our pipeline and with a con
 | LiDAR, same, drift correction on | sandbox | 25.5 s |
 | LiDAR, full apartment (215 s capture, stride 8): drift correction + pipeline | sandbox | 143 s + 134 s |
 | Depth model per image (photo/video tiers) | laptop, NVIDIA T500 | 0.36 s (first model load 31.6 s) |
+
+## Damage detection (OWLv2, threshold 0.3)
+| Test | Result |
+|---|---|
+| Speed, 4 GB T500, all prompts in one pass, fp16 | 3.4 s per frame (pipeline API: 30 s) |
+| False alarms, 60 frames of the undamaged apartment | 0.2: 25 in 21 frames; 0.3: 5 in 5 frames; 0.4: 2; 0.5: 0 |
+| Real damage photos (Wikimedia Commons, `tools/fetch_damage_examples.py`), right class at 0.3 | water stain 75% (8 images), peeling paint 25% (8), hole 12% (8), crack 0% (8); mould 1 image, efflorescence none |
+| OWL-ViT for comparison | right class 0% on the same photos |
+| Two-view rule, simulated stain on a real wall | 4 views, one region, centre within 1 cm |
+| Two-view rule, 40 random boxes | 25 placed on surfaces, 2 survived |
+Not measured: detection on real damage in a captured room (no staged damage was possible).
+| Finished system on the undamaged full-apartment scan (40 frames) | 1 detection, 0 regions reported: no false damage or repair items; damage stage ~2.3 min of 6.3 min total |

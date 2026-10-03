@@ -30,13 +30,18 @@ from .plan.rooms import (RES, _vertices, build_grids, extract_room_polygons, flo
 SCHEMA_VERSION = "1.1.0"
 Z90 = 1.645
 CONFIG = {
+    # Error budget v1, calibrated 2026-10-03 on the LiDAR benchmark
+    # (benchmarks/arkitscenes_421383/lidar_benchmark_v0.json: 8 wall lengths and
+    # 2 ceilings against Faro laser). See docs/lab_notebook.md, "Calibration".
+    "error_budget_version": "v1-calibrated-421383",
     "stride": 5,
-    "sys_face_m": 0.015,        # per wall face: depth offset toward camera (1.1-1.4 cm) + residual drift
-    "unsnapped_face_m": 0.05,   # edge placed from the 3 cm grid only, may not be a wall at all
-    "sys_ceiling_m": 0.020,     # ARKitScenes 421383 plane-fit errors -9.6 / -26.6 mm (2 captures)
+    "sys_face_m": 0.035,        # per wall face; 90% of measured wall-length errors are within ~80 mm
+                                # (= 1.645 * sqrt(2) * 35 mm). Was 15 mm (v0 guess): only 40% coverage.
+    "unsnapped_face_m": 0.06,   # edge placed from the 3 cm grid only: never tighter than a measured face
+    "sys_ceiling_m": 0.020,     # measured ceiling errors -9.9 / -27.7 mm, both inside +/-33 mm
     "ceiling_min_coverage": 0.25,
     "ceiling_upper_prior_m": 3.2,
-    "opening_width_sigma_m": 0.04,
+    "opening_width_sigma_m": 0.05,   # no ground truth for openings yet: uncalibrated
     "drift_correction": True,
 }
 
